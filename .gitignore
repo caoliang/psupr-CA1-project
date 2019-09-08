@@ -8,3 +8,4 @@ fifa19/
 .idea/other.xml
 .idea/modules.xml
 .idea/misc.xml
+*.pyc
