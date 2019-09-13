@@ -8,7 +8,7 @@ warnings.filterwarnings('ignore')
 #%matplotlib inline
 
 # Step 1. Prepare data
-from common_functions import *
+from py_src.common_functions import *
 
 # Step 2. Solve with Naive Bayes
 kernel = 1.0 * RBF(1.0)

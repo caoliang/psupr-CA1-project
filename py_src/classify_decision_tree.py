@@ -9,7 +9,7 @@ warnings.filterwarnings('ignore')
 
 
 # Step 1. Prepare data
-from common_functions import *
+from py_src.common_functions import *
 
 # create Decision Tree model for multi-class and one vs rest mode
 decision_tree = OneVsRestClassifier(BaggingClassifier(DecisionTreeClassifier(random_state=1),

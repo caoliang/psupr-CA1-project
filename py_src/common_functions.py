@@ -12,7 +12,7 @@ warnings.filterwarnings('ignore')
 from sklearn.preprocessing import label_binarize
 
 # Read original data
-sample_data = pd.read_csv('fifa19_ready_data.csv', encoding='utf-8')
+sample_data = pd.read_csv('./../fifa19_ready_data.csv', encoding='utf-8')
 # Remove ID
 sample_data = sample_data.drop('ID', axis=1)
 # Separate internation rating result with rest
