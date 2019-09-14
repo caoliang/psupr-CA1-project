@@ -1,39 +1,38 @@
-import matplotlib
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import warnings
 import time
-import re
-warnings.filterwarnings('ignore')
-
-#%matplotlib inline
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import classification_report, multilabel_confusion_matrix
+#import warnings
+#warnings.filterwarnings('ignore')
 
 from sklearn.preprocessing import label_binarize
 
-# Read original data
-sample_data = pd.read_csv('./../fifa19_ready_data.csv', encoding='utf-8')
-# Remove ID
-sample_data = sample_data.drop('ID', axis=1)
-# Separate internation rating result with rest
+#sample_data = pd.read_csv('./../fifa19_ready_data.csv', encoding='utf-8')
+sample_data = pd.read_csv('./../fifa19_features_reduced_data.csv', encoding='utf-8')
+
+
+# Separate international rating result with rest
 y = sample_data['International Reputation']
 X = sample_data.drop('International Reputation', axis=1)
-print('X: ', X.shape)
+
+print('X: ', X.shape, 'y:', y.shape)
 
 # Binarize the rating result
-# Rating score 5 records is only 6 / 18208, so it cannot be predicated with too little data,
-# we convert the score 5 to 4, so only choose rating scores 1, 2, 3, 4 to classify.
-sample_data['International Reputation'].loc[sample_data['International Reputation'] == 5] = 4
+# Rating score 4 and 5 records has only a few records of out total 18208, so it cannot be predicated with too little data,
+# we convert the score 5 and 4 to 3, so only choose rating scores 1, 2, 3 to classify.
+sample_data['International Reputation'].loc[sample_data['International Reputation'] == 5] = 3
+sample_data['International Reputation'].loc[sample_data['International Reputation'] == 4] = 3
 sample_data.hist(column='International Reputation')
 print(sample_data['International Reputation'].value_counts())
 
-y = label_binarize(y, classes=[1, 2, 3, 4])
+y = label_binarize(y, classes=[1, 2, 3])
 n_classes = y.shape[1]
 print('n_classes: ', n_classes)
 
 # Divide data into training set and testing set
-from sklearn.model_selection import train_test_split
-
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=1 / 3, random_state=1)
 print('X_train: ', X_train.shape, 'X_test: ', X_test.shape)
 
@@ -47,8 +46,6 @@ for i in range(n_classes):
 
 
 # Standardize records
-from sklearn.preprocessing import StandardScaler
-
 scaler = StandardScaler()
 scaler.fit(X_train)
 
@@ -125,3 +122,46 @@ def draw_roc_auc_in_classes(roc_auc_result, learn_method, num_classes=n_classes)
 def show_time_spent(start_time):
     time_used = time.time() - start_time
     return "{}:{}:{}".format(int(time_used / 3600), int(time_used % 3600 / 60), int(time_used % 60))
+
+def print_confusion_matix(y_test_data, y_pred_data):
+    # Print accuracy and confusion matrix
+    print()
+    print(multilabel_confusion_matrix(y_true=y_test_data, y_pred=y_pred_data))
+    print(classification_report(y_true=y_test_data, y_pred=y_pred_data, digits=4))
+    print()
+
+def get_log_reg_feature_importance(log_reg_clf):
+    feature_importance = abs(log_reg_clf.coef_[0])
+    feature_importance = 100.0 * (feature_importance / feature_importance.sum())
+    return feature_importance
+
+# Draw feature importance
+def show_feature_importance(one_vs_rest_clf, feature_importance_func=None, columns_names=X.columns, index=-1,
+                            max_cols=-1):
+    clfs = one_vs_rest_clf.estimators_
+
+    if index >= 0:
+        if feature_importance_func is None:
+            feature_importance = clfs[index].feature_importances_
+        else:
+            feature_importance = feature_importance_func(clfs[index])
+
+        last_col = max_cols if max_cols > 0 else len(feature_importance)
+
+        feat_imp = pd.Series(feature_importance[0:last_col], index=columns_names[0:last_col]).sort_values(
+            ascending=False)
+        feat_imp.plot(kind='bar', title='Feature Importances for Rating {}'.format(index + 1))
+        plt.show()
+        return
+
+    for i in range(len(clfs)):
+        if feature_importance_func is None:
+            feature_importance = clfs[i].feature_importances_
+        else:
+            feature_importance = feature_importance_func(clfs[i])
+
+        last_col = max_cols if max_cols > 0 else len(feature_importance)
+        feat_imp = pd.Series(feature_importance[0:last_col], index=columns_names[0:last_col]).sort_values(
+            ascending=False)
+        feat_imp.plot(kind='bar', title='Feature Importances for Rating {}'.format(i + 1))
+        plt.show()
