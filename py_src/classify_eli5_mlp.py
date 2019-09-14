@@ -1,9 +1,9 @@
 from sklearn.neural_network import MLPClassifier
 
 from sklearn.model_selection import cross_val_score, RandomizedSearchCV
-from sklearn.metrics import classification_report, confusion_matrix, multilabel_confusion_matrix, roc_curve, auc
+from sklearn.metrics import classification_report, multilabel_confusion_matrix
 from eli5.sklearn import PermutationImportance
-from itertools import cycle, product
+from itertools import product
 import seaborn as sns
 from hyperopt import fmin, tpe, hp, STATUS_OK, Trials
 
@@ -12,7 +12,7 @@ warnings.filterwarnings('ignore')
 #%matplotlib inline
 
 # Step 1. Prepare data
-from common_functions import *
+from py_src.common_functions import *
 
 # %%
 # Set up space dictionary with specified hyperparameters

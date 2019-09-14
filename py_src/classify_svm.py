@@ -8,7 +8,7 @@ warnings.filterwarnings('ignore')
 #%matplotlib inline
 
 # Step 1. Prepare data
-from common_functions import *
+from py_src.common_functions import *
 
 
 # create model for multi-class and one vs rest mode

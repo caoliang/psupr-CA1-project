@@ -8,10 +8,12 @@ warnings.filterwarnings('ignore')
 #%matplotlib inline
 
 # Step 1. Prepare data
-from common_functions import *
+from py_src.common_functions import *
 
 # create logistic regression model for multi-class and one vs rest mode
-logreg = OneVsRestClassifier(LogisticRegression(solver='sag', multi_class='ovr', random_state=1))
+logreg = OneVsRestClassifier(LogisticRegression(solver='sag', multi_class='ovr', random_state=1, penalty='elasticnet'))
+#logreg = OneVsRestClassifier(LogisticRegression(solver='sag', multi_class='ovr', random_state=1))
+#logreg = OneVsRestClassifier(LogisticRegression())
 # print("parameters: ", logreg.get_params().keys())
 
 # Create GridSearch to find best model
