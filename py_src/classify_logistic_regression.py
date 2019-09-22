@@ -1,3 +1,4 @@
+from sklearn.metrics import average_precision_score
 from sklearn.model_selection import GridSearchCV
 from sklearn.linear_model import LogisticRegression
 from sklearn.multiclass import OneVsRestClassifier
@@ -73,8 +74,11 @@ class classify_logistic_regression:
         roc_logreg = logreg_result['roc_auc']['macro']
         print("Best ROC score for logistic regression: {0:0.4f}".format(roc_logreg))
 
-        score_logreg = best_logreg.score(X_test, y_test)
-        print("Model accuracy is {0:0.4f}".format(score_logreg))
+        # score_logreg = best_logreg.score(X_test, y_test)
+        # print("Model accuracy is {0:0.4f}".format(score_logreg))
+
+        score_logreg = average_precision_score(y_test, y_score, average='weighted')
+        print('Model accuracy is: {0:0.4f}'.format(score_logreg))
 
         show_feature_importance(grid_logreg.best_estimator_, feature_importance_func=get_log_reg_feature_importance)
 

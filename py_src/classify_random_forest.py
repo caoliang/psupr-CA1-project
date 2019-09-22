@@ -1,4 +1,5 @@
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import average_precision_score
 from sklearn.multiclass import OneVsRestClassifier
 from sklearn.model_selection import GridSearchCV
 
@@ -73,11 +74,11 @@ class classify_random_forest:
         print('training spent: ', show_time_spent(timer_check))
 
         # Compute test scores
-        y_pred_proba = best_rnd_forest.predict(X_test)
-        print('y_pred_proba: ', y_pred_proba.shape)
+        y_score = best_rnd_forest.predict(X_test)
+        print('y_score: ', y_score.shape)
 
         # Compute ROC AUC score
-        rnd_forest_result = compute_roc_auc_in_classes(y_test, y_pred_proba, num_classes=n_classes)
+        rnd_forest_result = compute_roc_auc_in_classes(y_test, y_score, num_classes=n_classes)
 
         # Draw ROC plot
         draw_roc_auc_in_classes(rnd_forest_result, 'Random Forest', num_classes=n_classes)
@@ -86,8 +87,11 @@ class classify_random_forest:
         roc_rnd_forest = rnd_forest_result['roc_auc']["macro"]
         print('Best ROC score for Random Forest: {0:0.4f}'.format(roc_rnd_forest))
 
-        score_logreg = roc_rnd_forest.score(X_test, y_test)
-        print("Model accuracy is {0:0.4f}".format(score_logreg))
+        # score_logreg = roc_rnd_forest.score(X_test, y_test)
+        # print("Model accuracy is {0:0.4f}".format(score_logreg))
+
+        score_logreg = average_precision_score(y_test, y_score, average='weighted')
+        print('Model accuracy is: {0:0.4f}'.format(score_logreg))
 
         return best_rnd_forest;
 

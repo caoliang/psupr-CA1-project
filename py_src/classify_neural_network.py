@@ -1,3 +1,4 @@
+from sklearn.metrics import average_precision_score
 from sklearn.neural_network import MLPClassifier
 from sklearn.multiclass import OneVsRestClassifier
 from sklearn.model_selection import GridSearchCV
@@ -32,11 +33,23 @@ class classify_neural_network:
         #                  'estimator__max_iter': 60,
         #                  'estimator__solver': 'adam'}
         # So to save time, run with best parameters
-        hidden_layer_sizes_param = [(3,)]
-        max_iter_param = [ 60 ]
-        activation_param = ['tanh']
-        learning_rate_param = ['constant']
-        solver_param = ['adam']
+        # hidden_layer_sizes_param = [(3,)]
+        # max_iter_param = [ 60 ]
+        # activation_param = ['tanh']
+        # learning_rate_param = ['constant']
+        # solver_param = ['adam']
+        #
+        # hyperparameters = dict(estimator__hidden_layer_sizes=hidden_layer_sizes_param,
+        #                        estimator__max_iter=max_iter_param,
+        #                        estimator__activation=activation_param,
+        #                        estimator__learning_rate=learning_rate_param,
+        #                        estimator__solver=solver_param)
+
+        hidden_layer_sizes_param = [(2,), (3,), (4,), (5,), (10,), (2, 1), (2, 2), (3, 3), (4, 4), (5, 5), (10, 10)]
+        max_iter_param = [1000]
+        activation_param = ['relu', 'logistic', 'tanh']
+        learning_rate_param = ['constant', 'adaptive']
+        solver_param = ['lbfgs', 'sgd', 'adam']
 
         hyperparameters = dict(estimator__hidden_layer_sizes=hidden_layer_sizes_param,
                                estimator__max_iter=max_iter_param,
@@ -60,11 +73,11 @@ class classify_neural_network:
         print('training spent: ', show_time_spent(timer_check))
 
         # Compute test scores
-        y_pred_proba = best_mlp_nn.predict_proba(X_test)
-        print('y_pred_proba: ', y_pred_proba.shape)
+        y_score = best_mlp_nn.predict(X_test)
+        print('y_score: ', y_score.shape)
 
         # Compute ROC AUC score
-        mlp_nn_result = compute_roc_auc_in_classes(y_test, y_pred_proba, num_classes=n_classes)
+        mlp_nn_result = compute_roc_auc_in_classes(y_test, y_score, num_classes=n_classes)
 
         # Draw ROC plot
         draw_roc_auc_in_classes(mlp_nn_result, 'Neural Network', num_classes=n_classes)
@@ -73,10 +86,13 @@ class classify_neural_network:
         roc_mlp_nn = mlp_nn_result['roc_auc']["macro"]
         print('Best ROC score for Neural Network: {0:0.4f}'.format(roc_mlp_nn))
 
-        score_logreg = grid_mlp_nn.score(X_test, y_test)
+        # score_logreg = grid_mlp_nn.score(X_test, y_test)
+        # print('Model accuracy is: {0:0.4f}'.format(score_logreg))
+
+        score_logreg = average_precision_score(y_test, y_score, average='weighted')
         print('Model accuracy is: {0:0.4f}'.format(score_logreg))
 
-        return grid_mlp_nn
+        return best_mlp_nn
 
 if __name__ == '__main__':
     classify_neural_network.main()

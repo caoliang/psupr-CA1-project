@@ -1,4 +1,6 @@
 import warnings
+
+from sklearn.metrics import average_precision_score
 from sklearn.multiclass import OneVsRestClassifier
 from sklearn.model_selection import GridSearchCV
 from sklearn.ensemble import BaggingClassifier
@@ -122,7 +124,9 @@ class classify_decision_tree:
         roc_decision_tree = decision_tree_result['roc_auc']["macro"]
         print('Best ROC score for Decision Tree: {0:0.4f}'.format(roc_decision_tree))
 
-        score_decision_tree = best_decision_tree.score(X_test, y_test)
+        #score_decision_tree = best_decision_tree.score(X_test, y_test)
+
+        score_decision_tree = average_precision_score(y_test, y_score, average='weighted')
         print('Model accuracy is: {0:0.4f}'.format(score_decision_tree))
 
         return best_decision_tree
