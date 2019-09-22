@@ -3,14 +3,15 @@ from sklearn.svm.libsvm import predict
 
 from py_src.classify_decision_tree import classify_decision_tree
 from py_src.classify_logistic_regression import classify_logistic_regression
-from py_src.classify_svm import classify_svm
 from py_src.classify_neural_network import classify_neural_network
 from py_src.classify_random_forest import classify_random_forest
 from py_src.common_functions import *
+from sklearn.base import BaseEstimator
+from sklearn.base import ClassifierMixin
+import numpy as np
 
 roc_logreg = classify_logistic_regression.main()
 best_decision_tree = classify_decision_tree.main()
-best_linear_svc = classify_svm.main()
 best_mlp_nn = classify_neural_network.main()
 best_rnd_forest = classify_random_forest.main()
 
@@ -29,23 +30,20 @@ models_list = [(model['name'], model['score']) for model in avail_models]
 print(*models_list, sep='\n')
 
 # We will compare and choose the best 2 models to create voting classifier to estimate the results,
-voting_estimators = []
-sel_estimators = []
+voting_estimators = [roc_logreg, best_decision_tree, best_mlp_nn, best_rnd_forest]
+sel_estimators = [
+    ("Logistic Regression", roc_logreg),
+    ("Decision Tree", best_decision_tree),
+    ("Decision Tree", best_decision_tree),
+    ("Random Forest", best_rnd_forest)
+]
 
-for i in (0, 1):
-    #best_model_name, best_score = (avail_models[i]['name'], avail_models[i]['score'])
-    voting_estimators.append(avail_models[i]['model'])
-    sel_estimators.append(("Logistic Regression", roc_logreg))
-    sel_estimators.append(("Decision Tree", best_decision_tree))
-    sel_estimators.append(("Linear SVC", best_linear_svc))
-    sel_estimators.append(("Neural Network", best_mlp_nn))
-    sel_estimators.append(("Random Forest", best_rnd_forest))
-    #print('{0} - best_model_name: {1}, score: {2:0.4f}'.format(i, best_model_name, best_score))
-
-from sklearn.base import BaseEstimator
-from sklearn.base import ClassifierMixin
-import numpy as np
-import operator
+# for i in (0, 1):
+#     voting_estimators.append(avail_models[i]['model'])
+#     sel_estimators.append(("Logistic Regression", roc_logreg))
+#     sel_estimators.append(("Decision Tree", best_decision_tree))
+#     sel_estimators.append(("Neural Network", best_mlp_nn))
+#     sel_estimators.append(("Random Forest", best_rnd_forest))
 
 
 class HybridClassifier(BaseEstimator, ClassifierMixin):
@@ -195,9 +193,6 @@ print('y_score: ', y_score.shape)
 
 # Print confusion scores
 print_confusion_matix(y_test, y_score)
-
-
-from sklearn.metrics import classification_report
 
 # Compute ROC AUC score
 vt_models_result = compute_roc_auc_in_classes(y_test, y_score, num_classes=n_classes)
