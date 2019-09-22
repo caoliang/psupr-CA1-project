@@ -12,7 +12,7 @@ from sklearn.preprocessing import label_binarize
 
 #sample_data = pd.read_csv('./../fifa19_ready_data.csv', encoding='utf-8')
 #sample_data = pd.read_csv('./../fifa19_features_reduced_data.csv', encoding='utf-8')
-sample_data = pd.read_csv('./../final_data.csv', encoding='utf-8')
+sample_data = pd.read_csv('./../fifa19_features_reduced_data.csv', encoding='utf-8')
 
 
 # Separate international rating result with rest
