@@ -1,11 +1,8 @@
 fifa19/
 .ipynb_checkpoints/
-*.iml
-*.iml
-.idea/workspace.xml
-.idea/vcs.xml
-.idea/psupr-CA1-project.iml
-.idea/other.xml
-.idea/modules.xml
-.idea/misc.xml
+__pycache__/
 *.pyc
+
+.idea/
+*.iml
+
