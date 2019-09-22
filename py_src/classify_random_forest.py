@@ -1,11 +1,9 @@
-
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.multiclass import OneVsRestClassifier
 from sklearn.model_selection import GridSearchCV
 
 import warnings
 warnings.filterwarnings('ignore')
-#%matplotlib inline
 
 # Step 1. Prepare data
 from py_src.common_functions import *

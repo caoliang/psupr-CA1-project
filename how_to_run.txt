@@ -1,0 +1,9 @@
+Prerequisites:
+
+make sure anoconda is installed, and the packages in conda-install.txt have been installed correctly.
+
+1. jupyter, just open then .ipynb directly.
+
+2. spyder, go to tools->PYTHONPATH_MANAGER, add "/py_src" into it, then python files will be available to be run.
+
+3. PyCharm, set up the python interprator, then open the folder, the python files could be run directly.

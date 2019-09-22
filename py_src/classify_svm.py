@@ -12,6 +12,8 @@ from py_src.common_functions import *
 
 
 # create model for multi-class and one vs rest mode
+# linear_svc = OneVsRestClassifier(BaggingClassifier(LinearSVC(multi_class='ovr', random_state=1),
+#                                 bootstrap=True, oob_score = True, n_jobs=-1, random_state=1))
 linear_svc = OneVsRestClassifier(BaggingClassifier(LinearSVC(multi_class='ovr', random_state=1),
                                 bootstrap=True, oob_score = True, n_jobs=-1, random_state=1))
 print('Created SVM')
@@ -32,7 +34,7 @@ print('Created SVM')
 #                  'estimator__max_samples': 1000,
 #                  'estimator__n_estimators': 100}
 # To save time, only run with best parameters
-max_iter_param = [100]
+max_iter_param = [1000]
 dul_param = [True]
 C_param = [ 6 ]
 fit_intercept_param  = [False]
@@ -60,7 +62,8 @@ best_linear_svc = grid_linear_svc.fit(X_train, y_train)
 #Print all the Parameters that gave the best results:
 print('Best Parameters', grid_linear_svc.best_params_)
 
-print('training spent: ', show_time_spent(timer_check))
+print('training spent: ', show_time_spent(timer_check),
+      ',Accuracy on training set: {:.4f}'.format(grid_linear_svc.score(X_train, y_train)))
 
 # Compute test scores
 y_pred = best_linear_svc.predict(X_test)
@@ -76,3 +79,6 @@ draw_roc_auc_in_classes(linear_svc_result, 'Linear SVC', num_classes=n_classes)
 # Assign Best ROC value
 roc_linear_svc = linear_svc_result['roc_auc']["macro"]
 print('Best ROC score for Linear SVC: {0:0.4f}'.format(roc_linear_svc))
+
+score_linear_svc = best_linear_svc.score(X_test, y_test)
+print('Model accuracy is', score_linear_svc)
