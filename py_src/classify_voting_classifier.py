@@ -10,10 +10,11 @@ from sklearn.base import BaseEstimator
 from sklearn.base import ClassifierMixin
 import numpy as np
 
+# Since logistic and RF got better results compare other models, so we do voting on top of these 2.
 roc_logreg = classify_logistic_regression.main()
-best_decision_tree = classify_decision_tree.main()
-best_mlp_nn = classify_neural_network.main()
 best_rnd_forest = classify_random_forest.main()
+#best_decision_tree = classify_decision_tree.main()
+#best_mlp_nn = classify_neural_network.main()
 
 avail_models = [
     # {'name': 'Logistic Regression', 'roc_auc': roc_logreg, 'model': best_logreg, 'score': score_logreg},
@@ -30,11 +31,9 @@ models_list = [(model['name'], model['score']) for model in avail_models]
 print(*models_list, sep='\n')
 
 # We will compare and choose the best 2 models to create voting classifier to estimate the results,
-voting_estimators = [roc_logreg, best_decision_tree, best_mlp_nn, best_rnd_forest]
+voting_estimators = [roc_logreg, best_rnd_forest]
 sel_estimators = [
     ("Logistic Regression", roc_logreg),
-    ("Decision Tree", best_decision_tree),
-    ("Decision Tree", best_decision_tree),
     ("Random Forest", best_rnd_forest)
 ]
 

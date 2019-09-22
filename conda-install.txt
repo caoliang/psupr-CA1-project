@@ -2,3 +2,15 @@
 conda install -c conda-forge eli5
 
 conda install -c conda-forge hyperopt
+
+
+# following packages installed due to need of psupr class
+# please ignore them if you current env is the same.
+
+conda create -n psupr python=3.7
+
+condaactivate psupr
+
+condainstall numpy matplotlib jupyter pandas scikit-learn pydotplus graphviz
+
+condainstall -c conda-forge scikit-plot
